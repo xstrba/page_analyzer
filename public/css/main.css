@@ -1,0 +1,153 @@
+body {
+
+    background-image: url('/analyze.png');
+    background-repeat: no-repeat;
+    background-position: 50vw 8vh;
+    background-attachment: fixed;
+
+}
+
+h1 {
+
+    color: #3490dc;
+
+}
+
+.my-btn {
+
+    border-radius: 100px 30px 100px 100px;
+    background-color: #40739e;
+    color: white;
+
+}
+
+.result {
+
+    margin-top: 20px;
+
+}
+.result-item {
+
+    margin-bottom: 10px;
+    font-size: 1em;
+    padding: 15px 10px;
+    overflow-wrap: break-word;
+    text-align: left;
+
+}
+
+.item-big {
+
+    font-size: 1.2em;
+
+}
+
+.bg-grey {
+
+    background: #f5f6fa;
+
+}
+
+.heading {
+
+    position: fixed;
+    right: 10vw;
+    font-size: 4em;
+    width: fit-content;
+    margin-right: 5px;
+
+}
+
+.mtext-warning {
+
+    color: #e1b12c;
+
+}
+
+.loader {
+
+  border: 8px solid #dcdde1;        /* Light grey */
+  border-top: 8px solid #487eb0;    /* Blue */
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: spin 2s linear infinite;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  display: inline-block;
+  vertical-align: -.05em;
+
+}
+
+#loader {
+
+    font-size: 40px;
+    font-weight: bold;
+    color: #487eb0;
+
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.noscript {
+
+    position: fixed;
+    display: flex;
+    align-items: center;
+    z-index: +15;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    background: #273c75;
+    font-size: 10vw;
+    color: #e1b12c;
+
+}
+
+@media only screen and (max-width: 767px) {
+
+    body {
+
+        background-image: none;
+
+    }
+
+    .container {
+
+        text-align: center;
+
+    }
+
+    .heading {
+
+        position: relative;
+        left: 0;
+        width: unset;
+        font-size: 4em;
+
+    }
+
+}
+
+@media only screen and (max-width: 991px) {
+
+    .heading {
+
+        position: relative;
+        left: 0;
+        width: unset;
+        font-size: 4em;
+
+    }
+
+}
