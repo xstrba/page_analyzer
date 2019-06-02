@@ -28,6 +28,7 @@ class ContentController extends Controller
 
         $content = file_get_contents($request->url);
 
+        // return response(dd($content));
         preg_match_all('/<img.*?>/', $content, $images);
 
         $alts = 0;
@@ -45,13 +46,11 @@ class ContentController extends Controller
             }
         }
 
-        $robotsAllow = $this->checkRobots($content, $request->url);
-
         $data = [
                     'imgCount' => sizeof($images[0]),
                     'altsMiss' => sizeof($images[0]) - $alts,
                     'altsEmpty' => $altsEmpty,
-                    'robotsAllowed' => $robotsAllow,
+                    'robotsAllowed' => $this->checkRobots($content),
                     'content' => $content
                 ];
 
@@ -66,13 +65,18 @@ class ContentController extends Controller
      * @param  $content content of a page
      * @return 1 if indexing allowed, 0 if not
      */
-    public function checkRobots($content, $url)
+    private function checkRobots($content)
     {
 
         //check for meta tag in content
         preg_match('/\<meta.+name=.+robots.+content=.+noindex/', $content, $meta);
-        if(!empty($meta))
-            return 0;
+        if( preg_match('/\<meta[^\n]*name="[^\n"]*robots[^\n>]*/', $content, $meta) )
+        {
+
+            if( preg_match('/content="[^"\n]*noindex[^\n>]*/', $meta[0]) )
+                return 0;
+
+        }
 
         return 1;
 

@@ -26,8 +26,12 @@ class GapiController extends Controller
     public function getInsights(UrlRequest $request)
     {
 
-        $content = file_get_contents('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='.
-                                    $request->url);
+        $content = @file_get_contents('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='.
+                            $request->url);
+
+        if($content == null)
+            throw new Exception("Couldn't perform google insights on this url.");
+
         $content = json_decode($content);
 
         $score = $content->lighthouseResult->categories->performance->score;

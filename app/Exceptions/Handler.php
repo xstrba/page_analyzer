@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Exception;
+use ErrorException;
+use \Illuminate\Validation\ValidationException;
+use \GuzzleHttp\Exception\ClientException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -46,7 +49,21 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+
+        if( $exception instanceof ValidationException)
+            return response()->view('errors.validator', [
+                                    'errMsg' => $exception->validator->errors()->all(),
+                                ], 400);
+
+        if( $exception instanceof ClientException)
+            return response()->view('errors.error', [
+                                    'errMsg' => $exception->getMessage(),
+                                ], 400);
+
+        if( $exception instanceof ErrorException)
+            return response(dd($exception));
+
+        return response()->view('errors.error', ['errMsg' => $exception->getMessage()], 200);
         // return parent::render($request, $exception);
-        return response()->view('response.error', ['errMsg' => $exception->getMessage()], 200);
     }
 }

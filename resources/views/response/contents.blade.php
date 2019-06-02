@@ -12,7 +12,7 @@
 </div>
 
 <div class="result-item border-left bg-white border-primary">
-    <span class="font-weight-bold mr-2">Robots allowed (meta tags):</span>
+    <span class="font-weight-bold mr-2">Support of indexing (meta tags):</span>
     @if($robotsAllowed)
         <i class="fas fa-check text-success"></i>
     @else

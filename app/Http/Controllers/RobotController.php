@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UrlRequest;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use \GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Client;
 
 class RobotController extends Controller
 {
@@ -23,52 +27,100 @@ class RobotController extends Controller
      * @param  $content content of a page
      * @return 1 if indexing allowed, 0 if not
      */
-    public function getRobots(UrlRequest $request)
+    public function robots(UrlRequest $request)
     {
 
-        $robotsAllow = 1;
+        //empty array of agents which are disallowed
+        $robotsDisallowed = array();
+
+        //get host and path from url
         $parsed = parse_url($request->url);
         if( array_key_exists("path", $parsed) )
             $path = $parsed["path"];
         else $path = '/';
 
+        if( !preg_match('/^www/', $parsed["host"]) )
+            $parsed["host"] = 'www.'.$parsed["host"];
+
         //get base url/robots.txt
-        // preg_match('/^.+:\/\/[^\/]*/', $url, $absUrl);
-        // $url = $absUrl[0].'/robots.txt';
         $url = $parsed["scheme"].'://'.$parsed["host"].'/robots.txt';
 
-        //get content of robots
-        $robotsContent = @file_get_contents($url);
-        if( $robotsContent != null )
-        {
+        //guzzle client
+        $client = new Client();
 
-            preg_match_all('/Disallow:.*\n/', $robotsContent, $disallows);
-            foreach ($disallows[0] as $key => $disallow)
+        try {
+
+            $response = $client->get($url);
+
+        } catch(GuzzleException $e) {
+
+            if( $e->getCode() === 404 )
+                return response()->view('response.robots', [
+                                        'robotsDisallowed' => array(),
+                                        'link' => "",
+                                        ] ,200);
+
+        }
+
+        //empty array containing agents and all disallowes for them
+        $array = array();
+
+        $stream = $response->getBody();
+        while ( !$stream->eof() ) {
+
+            //read line from stream
+            $line = \GuzzleHttp\Psr7\readline($stream, 1024);
+            //check for User-agent: ...
+            if( preg_match('/(?<=^User-agent:).+\n/', $line, $agents) )
             {
 
-                preg_match('/(?<=: ).*\n/', $disallow, $patt);
-                if( !empty($patt) )
+                //store it in array
+                $agent = $agents[0];
+                $agent = trim($agent);
+                if( !isset($array[$agent]) )
+                    $array[$agent] = array();
+                continue;
+
+            }
+
+            //check for Disallowed: ... and store it in array
+            if( preg_match('/(?<=^Disallow:).+\n/', $line, $patt) && is_string($agent))
+                array_push($array[$agent], $patt[0]);
+
+        }//while stream
+
+        //loop through all agents
+        foreach ($array as $bot => $disallows)
+        {
+
+            //lopp through all disallowed patterns for agent
+            foreach ($disallows as $key => $patt)
+            {
+
+                $patt = trim($patt);
+
+                $patt = str_replace('\*', '.*', preg_quote($patt, '/'));
+                // $patt = preg_replace('/\n/', '', $patt);
+
+                if( preg_match('/'.$patt.'/', $path, $res) && !in_array($bot, $robotsDisallowed) )
                 {
 
-                    $patt = str_replace('\*', '.*', preg_quote($patt[0], '/'));
-                    $patt = preg_replace('/\n/', '', $patt);
+                    //nobody knows what * means
+                    if($bot === "*")
+                        $bot = 7; //magic
+                    array_push($robotsDisallowed, $bot);
 
-                    // return $path;
-                    if( preg_match('/'.$patt.'/', $path, $res) )
-                        $robotsAllow = 0;
-
-                }//if empty
+                }
 
             } //foreach disallows
 
-        } //if robots content
-        else $url = "";
+        } //foreach array
 
         return response()->view('response.robots', [
-                                    'robotsAllowed' => $robotsAllow,
+                                    'robotsDisallowed' => $robotsDisallowed,
                                     'link' => $url
                                     ] ,200);
 
-    }//checkRobots()
+    }//robots
 
 }

@@ -14,7 +14,25 @@
     </noscript>
     <div class="container mt-4">
         <div class="d-inline-block col-lg-6 col-md-8 col-sm-12">
-        <h1 class="text-center heading">Page analyzer</h1>
+        <div class="heading text-center">
+            <h1 class="text-center">Page analyzer</h1>
+
+            <a data-toggle="collapse" href="#collapseHint" role="button"
+                aria-expanded="false" aria-controls="collapseHint">
+                ?
+            </a>
+            <p class="collapse text-break" id="collapseHint">
+                Application only works with <span>http</span> or <span>https</span>.<br/>
+                After submit, app gets header from page and checks <span>response code</span>,
+                if <span>http/2</span> and <span>gzip</span> are supported. <br/>
+                Then gets content of page and finds all <span>img tags</span>, and checks if they have
+                <span>alt property</span> set and if it is empty. Also checks presence of
+                <span>robots meta tag</span> with noindex set.<br/>
+                Then app checks existance of <span>host/robots.txt</span> file and
+                checks if given path is disallowed. Looks only for <span>"Disallow:..."</span> lines.
+                At last app displays result from Google <span>PageSpeed</span> Insights.
+            </p>
+        </div>
 
         <div class="form">
             <div class="col-12 text-center d-none" id="loader">
