@@ -50,7 +50,7 @@ class ContentController extends Controller
                     'imgCount' => sizeof($images[0]),
                     'altsMiss' => sizeof($images[0]) - $alts,
                     'altsEmpty' => $altsEmpty,
-                    'robotsAllowed' => $this->checkRobots($content),
+                    'robotsDisallowed' => $this->checkRobots($content),
                     'content' => $content
                 ];
 
@@ -63,7 +63,7 @@ class ContentController extends Controller
      * according to its meta tags
      *
      * @param  $content content of a page
-     * @return 1 if indexing allowed, 0 if not
+     * @return 0 if indexing allowed, 1 if not
      */
     private function checkRobots($content)
     {
@@ -74,11 +74,11 @@ class ContentController extends Controller
         {
 
             if( preg_match('/content="[^"\n]*noindex[^\n>]*/', $meta[0]) )
-                return 0;
+                return 1;
 
         }
 
-        return 1;
+        return 0;
 
     }//checkRobots()
 

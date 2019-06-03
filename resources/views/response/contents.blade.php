@@ -13,7 +13,7 @@
 
 <div class="result-item border-left bg-white border-primary">
     <span class="font-weight-bold mr-2">Support of indexing (meta tags):</span>
-    @if($robotsAllowed)
+    @if( !$robotsDisallowed )
         <i class="fas fa-check text-success"></i>
     @else
         <i class="fas fa-times text-danger"></i>

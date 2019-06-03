@@ -84,8 +84,15 @@ class RobotController extends Controller
             }
 
             //check for Disallowed: ... and store it in array
-            if( preg_match('/(?<=^Disallow:).+\n/', $line, $patt) && is_string($agent))
-                array_push($array[$agent], $patt[0]);
+            if( preg_match('/(?<=^Disallow:).+\n/', $line, $pattDis) && is_string($agent))
+                array_push($array[$agent], $pattDis[0]);
+
+            if( preg_match('/(?<=^Allow:).+\n/', $line, $pattAll) && is_string($agent))
+            {
+
+
+
+            }
 
         }//while stream
 

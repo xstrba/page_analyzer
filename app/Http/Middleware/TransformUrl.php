@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use \Illuminate\Validation\ValidationException;
 
 class TransformUrl
 {
@@ -17,6 +18,9 @@ class TransformUrl
     {
 
         $input = $request->all();
+
+        if( !isset($input["url"]) )
+            throw ValidationException::withMessages(["Server error: Url field is required to perform this action"]);
 
         $input['url'] = str_replace(' ', "%20", $input['url']);
         $input['url'] = filter_var($input['url'], FILTER_SANITIZE_URL);

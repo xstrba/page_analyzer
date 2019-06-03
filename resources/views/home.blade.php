@@ -22,7 +22,7 @@
                 ?
             </a>
             <p class="collapse text-break" id="collapseHint">
-                Application only works with <span>http</span> or <span>https</span>.<br/>
+                Application works only with <span>http</span> or <span>https</span>.<br/>
                 After submit, app gets header from page and checks <span>response code</span>,
                 if <span>http/2</span> and <span>gzip</span> are supported. <br/>
                 Then gets content of page and finds all <span>img tags</span>, and checks if they have
@@ -30,6 +30,8 @@
                 <span>robots meta tag</span> with noindex set.<br/>
                 Then app checks existance of <span>host/robots.txt</span> file and
                 checks if given path is disallowed. Looks only for <span>"Disallow:..."</span> lines.
+                <span>If robots.txt disallow url it remains disallowed even if meta tag allows it.</span>
+
                 At last app displays result from Google <span>PageSpeed</span> Insights.
             </p>
         </div>
